@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: `default-src 'self' https://${process.env.NEXT_PUBLIC_SUPABASE_URL}; script-src 'self' 'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s='`, // Adicionado o hash do script
+            value: `default-src 'self' https://${process.env.NEXT_PUBLIC_SUPABASE_URL}`,
           },
         ],
       },
