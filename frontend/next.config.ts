@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
 
   // Headers de segurança
   async headers() {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
     return [
       {
         source: '/(.*)',
@@ -34,7 +36,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: `default-src 'self' https://${process.env.NEXT_PUBLIC_SUPABASE_URL}`,
+            value: `default-src 'self' https://${supabaseUrl}; script-src 'self' 'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s='`, // Adicionado o hash do script
           },
         ],
       },
