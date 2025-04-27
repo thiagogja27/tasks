@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import supabase from '../app/lib/supabaseClient';
+import { supabase } from '../app/lib/supabaseClient';
 import TaskList from '../components/TaskList';
 import NewTaskForm from '../components/NewTaskForm';
 import { Task } from '../types/types';
@@ -11,10 +11,13 @@ export default function Home() {
   // Função para buscar tarefas
   const fetchTasks = async () => {
     try {
-      const { data, error } = await supabase.from('tasks').select('*');
+      console.log('Tentando buscar tarefas...');
+      const { data, error } = await supabase.from('task').select('*'); // Alterado para 'task'
       if (error) {
+        console.error('Erro ao buscar tarefas:', error);
         throw error;
       }
+      console.log('Tarefas buscadas com sucesso:', data);
       setTasks(data || []);
     } catch (error) {
       console.error('Erro ao buscar tarefas:', error);
@@ -24,10 +27,13 @@ export default function Home() {
   // Função para criar uma nova tarefa
   const createTask = async (title: string) => {
     try {
-      const { error } = await supabase.from('tasks').insert({ title });
+      console.log('Tentando criar uma nova tarefa com título:', title);
+      const { error } = await supabase.from('task').insert({ title }); // Alterado para 'task'
       if (error) {
+        console.error('Erro ao criar tarefa:', error);
         throw error;
       }
+      console.log('Tarefa criada com sucesso!');
       fetchTasks(); // Atualiza a lista após criar
     } catch (error) {
       console.error('Erro ao criar tarefa:', error);
@@ -37,13 +43,16 @@ export default function Home() {
   // Função para alternar o status de uma tarefa
   const toggleTask = async (id: number) => {
     try {
+      console.log('Tentando alternar status da tarefa com id:', id);
       const { error } = await supabase
-        .from('tasks')
-        .update({ completed: true }) // Exemplo: atualiza o campo "completed"
+        .from('task') // Alterado para 'task'
+        .update({ completed: true })
         .eq('id', id);
       if (error) {
+        console.error('Erro ao alternar status da tarefa:', error);
         throw error;
       }
+      console.log('Status da tarefa alternado com sucesso!');
       fetchTasks(); // Atualiza a lista após alternar o status
     } catch (error) {
       console.error('Erro ao alternar status da tarefa:', error);
@@ -51,6 +60,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    console.log('Componente carregado, buscando tarefas...');
     fetchTasks(); // Busca as tarefas ao carregar a página
   }, []);
 
