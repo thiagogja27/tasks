@@ -1,43 +1,57 @@
 'use client';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import supabase from '../app/lib/supabaseClient';
 import TaskList from '../components/TaskList';
 import NewTaskForm from '../components/NewTaskForm';
-import { Task } from '../types/types'; // Importação correta
-
+import { Task } from '../types/types';
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
+  // Função para buscar tarefas
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/tasks');
-      setTasks(response.data);
+      const { data, error } = await supabase.from('tasks').select('*');
+      if (error) {
+        throw error;
+      }
+      setTasks(data || []);
     } catch (error) {
       console.error('Erro ao buscar tarefas:', error);
     }
   };
 
+  // Função para criar uma nova tarefa
   const createTask = async (title: string) => {
     try {
-      await axios.post('http://localhost:3000/tasks', { title });
-      fetchTasks();
+      const { error } = await supabase.from('tasks').insert({ title });
+      if (error) {
+        throw error;
+      }
+      fetchTasks(); // Atualiza a lista após criar
     } catch (error) {
       console.error('Erro ao criar tarefa:', error);
     }
   };
 
+  // Função para alternar o status de uma tarefa
   const toggleTask = async (id: number) => {
     try {
-      await axios.post(`http://localhost:3000/tasks/${id}/toggle`);
-      fetchTasks();
+      const { error } = await supabase
+        .from('tasks')
+        .update({ completed: true }) // Exemplo: atualiza o campo "completed"
+        .eq('id', id);
+      if (error) {
+        throw error;
+      }
+      fetchTasks(); // Atualiza a lista após alternar o status
     } catch (error) {
-      console.error('Erro ao alternar o status da tarefa:', error);
+      console.error('Erro ao alternar status da tarefa:', error);
     }
   };
 
   useEffect(() => {
-    fetchTasks();
+    fetchTasks(); // Busca as tarefas ao carregar a página
   }, []);
 
   return (
