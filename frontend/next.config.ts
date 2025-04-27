@@ -1,12 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Configurações essenciais para Supabase
   images: {
     domains: [
       'lh3.googleusercontent.com', // Para autenticação social
       'images.unsplash.com',      // Se usar imagens externas
-      'your-supabase-project.supabase.co' // Para imagens do Storage
+      'your-supabase-project.supabase.co', // Para imagens do Storage
     ],
     remotePatterns: [
       {
@@ -36,7 +35,14 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: `default-src 'self' https://${supabaseUrl}; script-src 'self' 'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s='`, // Adicionado o hash do script
+            value: `
+              default-src 'self' https://${supabaseUrl}; 
+              script-src 'self' 'https://cdn.jsdelivr.net' 'https://unpkg.com' 'https://www.googletagmanager.com'; 
+              style-src 'self' 'https://fonts.googleapis.com'; 
+              font-src 'self' 'https://fonts.gstatic.com';
+              connect-src 'self' 'https://your-supabase-project.supabase.co';
+              img-src 'self' data: 'https://images.unsplash.com' 'https://lh3.googleusercontent.com';
+            `,
           },
         ],
       },
